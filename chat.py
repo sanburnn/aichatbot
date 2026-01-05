@@ -2,15 +2,11 @@ import torch
 
 SYSTEM_PROMPT = "Short answer but straight to the points!"
 
-def generate_text(
-    tokenizer,
-    model,
-    prompt: str,
-    max_new_tokens: int = 128
-) -> str:
+def generate_text(tokenizer, model, prompt: str, max_new_tokens: int = 128) -> str:
     full_prompt = f"{SYSTEM_PROMPT}\nUser: {prompt}\nAssistant:"
 
     inputs = tokenizer(full_prompt, return_tensors="pt")
+    inputs = {k: v.to(model.device) for k, v in inputs.items()}
 
     with torch.inference_mode():
         output = model.generate(

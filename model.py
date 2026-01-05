@@ -1,46 +1,33 @@
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-# -----------------------------
-# Available models
-# -----------------------------
 MODELS = {
     "qwen-1.5b": {
         "name": "Qwen/Qwen2.5-1.5B-Instruct",
-        "dtype": torch.float32,
-        "device": "cpu"
+        "device": "cuda",
+        "dtype": torch.float16
     },
-    # Future models (examples)
+    # Future bigger models
     # "qwen-7b": {
     #     "name": "Qwen/Qwen2.5-7B-Instruct",
-    #     "dtype": torch.float16,
-    #     "device": "cpu"
-    # },
-    # "llama-3": {
-    #     "name": "meta-llama/Meta-Llama-3-8B-Instruct",
-    #     "dtype": torch.float16,
-    #     "device": "cpu"
+    #     "device": "cuda",
+    #     "dtype": torch.float16
     # },
 }
 
-# -----------------------------
-# Model loader
-# -----------------------------
 def load_model(model_key: str = "qwen-1.5b"):
     if model_key not in MODELS:
-        raise ValueError(
-            f"Model '{model_key}' not found. Available: {list(MODELS.keys())}"
-        )
+        raise ValueError(f"Unknown model: {model_key}")
 
     cfg = MODELS[model_key]
 
     print(f"Loading tokenizer: {cfg['name']}")
     tokenizer = AutoTokenizer.from_pretrained(cfg["name"])
 
-    print(f"Loading model: {cfg['name']} (CPU)")
+    print(f"Loading model on GPU...")
     model = AutoModelForCausalLM.from_pretrained(
         cfg["name"],
-        device_map=cfg["device"],
+        device_map="auto",        # auto-place on GPU
         torch_dtype=cfg["dtype"]
     )
 
