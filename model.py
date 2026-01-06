@@ -7,15 +7,16 @@ MODELS = {
         "device": "cuda",
         "dtype": torch.float16
     },
-    # Future bigger models
-    # "qwen-7b": {
-    #     "name": "Qwen/Qwen2.5-7B-Instruct",
-    #     "device": "cuda",
-    #     "dtype": torch.float16
-    # },
+    
+    "llama-1b": {
+        "name": "meta-llama/Llama-3.2-1B-Instruct",
+        "device": "cuda",
+        "dtype": torch.float16
+    },
 }
 # 
-def load_model(model_key: str = "qwen-1.5b"):
+# def load_model(model_key: str = "qwen-1.5b"):
+def load_model(model_key: str = "llama-1b"):
     if model_key not in MODELS:
         raise ValueError(f"Unknown model: {model_key}")
 
