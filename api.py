@@ -17,6 +17,7 @@ app = FastAPI(
 # Load model ONCE (important)
 # -----------------------------
 tokenizer, model = load_model("qwen-1.5b")
+# tokenizer, model = load_model("llama-1b") # waiting for approval Llama
 
 # -----------------------------
 # Request / Response schemas
