@@ -21,34 +21,25 @@ def call_llm(tokenizer, model, prompt, max_new_tokens):
 
 
 def generate_text(tokenizer, model, prompt: str, max_new_tokens: int = 128) -> str:
-    # ---------------------------
-    # 1. NORMAL LOCAL LLM ANSWER
-    # ---------------------------
+
     full_prompt = f"{SYSTEM_PROMPT}\nUser: {prompt}\nAssistant:"
     initial_output = call_llm(tokenizer, model, full_prompt, max_new_tokens)
 
-    # Extract plain text
     initial_answer = initial_output.split("Assistant:")[-1].strip()
 
-    # If answer is good → return
     if not needs_web_search(initial_answer):
         return initial_answer
 
-    # ---------------------------
-    # 2. FALLBACK: WEB SEARCH
-    # ---------------------------
     results = web_search(prompt)
 
     if len(results) == 0:
-        return initial_answer  # No search results → fallback to original
+        return initial_answer  
 
     context = ""
     for r in results:
         context += f"- {r.get('title')}\n{r.get('body')}\n{r.get('href')}\n\n"
 
-    # ---------------------------
-    # 3. ASK LLM AGAIN WITH CONTEXT
-    # ---------------------------
+
     enhanced_prompt = f"""
 Use the following web search results to answer the user's question accurately.
 
