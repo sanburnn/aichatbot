@@ -136,7 +136,7 @@ set HF_TOKEN=your_token_here
 ## ▶️ Running the App
 
 ```bash
-uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+uvicorn api:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 Open browser:

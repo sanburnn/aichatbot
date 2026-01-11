@@ -15,8 +15,8 @@ MODELS = {
     },
 }
 # 
-def load_model(model_key: str = "qwen-1.5b"):
-# def load_model(model_key: str = "llama-1b"):
+# def load_model(model_key: str = "qwen-1.5b"):
+def load_model(model_key: str = "llama-1b"):
     if model_key not in MODELS:
         raise ValueError(f"Unknown model: {model_key}")
 
