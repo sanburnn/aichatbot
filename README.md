@@ -95,6 +95,8 @@ Install PyTorch (example CUDA 12.1):
 pip install torch torchvision torchaudio
 pip install transformers accelerate sentencepiece
 pip install fastapi uvicorn pydantic
+pip install duckduckgo-search llama-index
+
 ```
 
 Verify:

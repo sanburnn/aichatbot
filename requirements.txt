@@ -1,0 +1,15 @@
+torch 
+torchvision 
+torchaudio
+transformers 
+accelerate 
+sentencepiece
+fastapi 
+uvicorn 
+pydantic
+duckduckgo-search 
+llama-index
+sentence-transformers 
+faiss-cpu 
+pypdf 
+python-docx

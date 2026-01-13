@@ -1,6 +1,7 @@
 import torch
 from search import web_search
 from utils import needs_web_search
+from rag.embedder import embed_texts
 
 SYSTEM_PROMPT = "Short answer but straight to the points!"
 
@@ -41,17 +42,57 @@ def generate_text(tokenizer, model, prompt: str, max_new_tokens: int = 128) -> s
 
 
     enhanced_prompt = f"""
-Use the following web search results to answer the user's question accurately.
+Answer the question using ONLY the information below. 
+Respond in ONE short sentence. English only.
 
-Search results:
+Information:
 {context}
 
-User question: {prompt}
+Question: {prompt}
 
-Final answer:
+Answer:
 """
 
     final_output = call_llm(tokenizer, model, enhanced_prompt, max_new_tokens)
-    final_answer = final_output.strip()
+    # final_answer = final_output.strip()
+
+    # return final_answer
+    # Extract text AFTER the last "Answer:"
+    if "Answer:" in final_output:
+        final_answer = final_output.split("Answer:")[-1].strip()
+    else:
+        final_answer = final_output.strip()
 
     return final_answer
+
+
+
+def answer_with_rag(tokenizer, model, query, vector_store, max_new_tokens=128):
+    q_embed = embed_texts([query])[0]
+
+    retrieved = vector_store.search(q_embed, top_k=5)
+
+    context = "\n\n".join(retrieved)
+
+    prompt = f"""
+Use ONLY the information below to answer.
+Be short, clear, and accurate.
+
+Context:
+{context}
+
+Question:
+{query}
+
+Answer:
+"""
+
+    return call_llm(tokenizer, model, prompt, max_new_tokens)
+
+
+def extract_final(s: str, marker:str, sep:str | None=None, default:str="")->str:
+    idx = s.find(marker)
+    if idx ==-1:
+        return default
+    after = s[idx + len(marker):]
+    return after.split(sep, 1)[0] if sep else after 
