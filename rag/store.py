@@ -3,40 +3,45 @@ import numpy as np
 
 
 class VectorStore:
-    """
-    Simple FAISS-based vector store.
-    Uses cosine similarity via inner product.
-    """
-
-    def __init__(self, dim: int):
+    def __init__(self, dim):
         self.dim = dim
-        self.index = faiss.IndexFlatIP(dim)
-        self.texts: list[str] = []
+        self.index = faiss.IndexFlatL2(dim)
+        self.texts = []
 
-    def add(self, embeddings, texts: list[str]):
+    def add(self, embeddings, texts):
         """
-        Add embeddings + corresponding texts.
+        embeddings: numpy array (N x dim)
+        texts: list of strings
         """
+        embeddings = np.array(embeddings).astype("float32")
+
         if len(embeddings) != len(texts):
-            raise ValueError("Embeddings and texts length mismatch")
+            raise ValueError("Embeddings and texts must have same length")
 
-        vectors = np.asarray(embeddings, dtype="float32")
-        self.index.add(vectors)
+        # Add to FAISS
+        self.index.add(embeddings)
+
+        # Add text chunks
         self.texts.extend(texts)
 
-    def search(self, query_embedding, top_k: int = 5) -> list[str]:
-        """
-        Search for most relevant chunks.
-        """
-        query = np.asarray([query_embedding], dtype="float32")
-        scores, indices = self.index.search(query, top_k)
+    def search(self, query_embedding, top_k=3):
+        query_embedding = np.array([query_embedding]).astype("float32")
+
+        distances, indices = self.index.search(query_embedding, top_k)
 
         results = []
+
         for idx in indices[0]:
+            if idx == -1:
+                continue
+
+            #  FIX: avoid error if FAISS returns an index beyond stored texts
             if idx < len(self.texts):
-                results.append(self.texts[idx])
+                results.append({
+                    "text": self.texts[idx]
+                })
 
         return results
 
-    def size(self) -> int:
-        return self.index.ntotal
+    def size(self):
+        return len(self.texts)
