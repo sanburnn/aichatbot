@@ -20,8 +20,6 @@ class VectorStore:
 
         # Add to FAISS
         self.index.add(embeddings)
-
-        # Add text chunks
         self.texts.extend(texts)
 
     def search(self, query_embedding, top_k=3):
@@ -34,8 +32,6 @@ class VectorStore:
         for idx in indices[0]:
             if idx == -1:
                 continue
-
-            #  FIX: avoid error if FAISS returns an index beyond stored texts
             if idx < len(self.texts):
                 results.append({
                     "text": self.texts[idx]

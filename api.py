@@ -166,7 +166,6 @@ async def ask_file_endpoint(
     chunks = chunk_text(text)
     embeddings = embed_texts(chunks)
 
-    # Create isolated store (unique for this call)
     local_store = VectorStore(dim=EMBED_DIM)
     local_store.add(embeddings, chunks)
 

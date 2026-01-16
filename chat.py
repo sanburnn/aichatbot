@@ -56,7 +56,6 @@ Answer:
     final_output = call_llm(tokenizer, model, enhanced_prompt, max_new_tokens)
     # final_answer = final_output.strip()
 
-    # return final_answer
     # Extract text AFTER the last "Answer:"
     if "Answer:" in final_output:
         final_answer = final_output.split("Answer:")[-1].strip()
