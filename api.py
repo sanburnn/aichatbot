@@ -23,8 +23,8 @@ app = FastAPI(
 # -----------------------------
 # Load model ONCE (important)
 # -----------------------------
-# tokenizer, model = load_model("qwen-1.5b")
-tokenizer, model = load_model("llama-1b") # waiting for approval Llama
+tokenizer, model = load_model("qwen-1.5b")
+# tokenizer, model = load_model("llama-1b") # waiting for approval Llama
 
 # -----------------------------
 # Request / Response schemas
@@ -166,7 +166,6 @@ async def ask_file_endpoint(
     chunks = chunk_text(text)
     embeddings = embed_texts(chunks)
 
-    # Create isolated store (unique for this call)
     local_store = VectorStore(dim=EMBED_DIM)
     local_store.add(embeddings, chunks)
 

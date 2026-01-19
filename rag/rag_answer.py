@@ -5,10 +5,10 @@ from chat import generate_text
 
 
 def answer_with_rag(tokenizer, model, query, vector_store, max_new_tokens=128):
-    # Embed user query
+    # user query
     query_embedding = embed_texts([query])[0]
 
-    # Retrieve top-K chunks
+    # top-K chunks
     results = vector_store.search(query_embedding, top_k=3)
 
     if len(results) == 0:
